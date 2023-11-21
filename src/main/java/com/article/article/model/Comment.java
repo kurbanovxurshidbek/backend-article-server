@@ -4,29 +4,24 @@ import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
-import java.util.LinkedHashSet;
+
 import java.util.Objects;
-import java.util.Set;
 
 @Getter
 @ToString(callSuper = true)
 @Table(indexes = {
-        @Index(columnList = "title"),
+        @Index(columnList = "content"),
         @Index(columnList = "createdAt"),
         @Index(columnList = "createdBy")
 })
 @Entity
-public class Article extends AuditingFields {
+public class Comment extends AuditingFields {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     @Setter
-    @Column(nullable = false)
-    private String title;
-
-    @Setter
-    @Column(nullable = false, length = 1000)
+    @Column(nullable = false, length = 500)
     private String content;
 
     @Setter
@@ -34,28 +29,27 @@ public class Article extends AuditingFields {
     @JoinColumn(name = "userId")
     private UserAccount userAccount;
 
-    @ToString.Exclude
-    @OneToMany(mappedBy = "article", cascade = CascadeType.ALL)
-    private final Set<Comment> comments = new LinkedHashSet<>();
+    @Setter
+    @ManyToOne
+    private Article article;
 
-    protected Article() {
+    protected Comment() {
     }
 
-    private Article(String title, String content) {
-        this.title = title;
+    private Comment(String content) {
         this.content = content;
     }
 
-    public static Article of(String title, String content) {
-        return new Article(title, content);
+    public static Comment of(String content) {
+        return new Comment(content);
     }
 
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-        Article article = (Article) o;
-        return Objects.equals(id, article.id);
+        Comment comment = (Comment) o;
+        return Objects.equals(id, comment.id);
     }
 
     @Override
