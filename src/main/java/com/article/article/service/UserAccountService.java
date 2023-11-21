@@ -17,10 +17,6 @@ public class UserAccountService {
 
     private final UserAccountRepository userAccountRepository;
 
-    public Optional<UserAccountDto> searchUser(String username) {
-        return userAccountRepository.findById(username).map(UserAccountDto::from);
-    }
-
     public UserIdResponse createUserAccount(Header<UserAccountRequest> dto) {
         var userDto = dto.getData();
         var id = userDto.userId();
