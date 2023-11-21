@@ -1,55 +1,51 @@
-package com.article.article.model;
+package com.article.article.model.entity;
 
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
 
+import java.util.LinkedHashSet;
 import java.util.Objects;
+import java.util.Set;
 
 @Getter
 @ToString(callSuper = true)
 @Table(indexes = {
-        @Index(columnList = "content"),
+        @Index(columnList = "name", unique = true),
         @Index(columnList = "createdAt"),
         @Index(columnList = "createdBy")
 })
 @Entity
-public class Comment extends AuditingFields {
+public class Hashtag extends AuditingFields {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     @Setter
-    @Column(nullable = false, length = 500)
-    private String content;
+    @Column(nullable = false)
+    private String name;
 
     @Setter
-    @ManyToOne
-    @JoinColumn(name = "userId")
-    private UserAccount userAccount;
+    @ManyToMany(mappedBy = "hashtags")
+    private Set<Article> articles = new LinkedHashSet<>();
 
-    @Setter
-    @ManyToOne
-    private Article article;
+    protected Hashtag(){}
 
-    protected Comment() {
+    private Hashtag(String name){
+        this.name = name;
     }
 
-    private Comment(String content) {
-        this.content = content;
-    }
-
-    public static Comment of(String content) {
-        return new Comment(content);
+    public static Hashtag of(String name){
+        return new Hashtag(name);
     }
 
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-        Comment comment = (Comment) o;
-        return Objects.equals(id, comment.id);
+        Hashtag hashtag = (Hashtag) o;
+        return Objects.equals(id, hashtag.id);
     }
 
     @Override

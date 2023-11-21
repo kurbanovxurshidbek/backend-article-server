@@ -1,4 +1,4 @@
-package com.article.article.model;
+package com.article.article.model.entity;
 
 import jakarta.persistence.*;
 import lombok.Getter;
@@ -51,14 +51,16 @@ public class Article extends AuditingFields {
     protected Article() {
     }
 
-    private Article(String title, String content) {
+    private Article(UserAccount userAccount, String title, String content) {
+        this.userAccount = userAccount;
         this.title = title;
         this.content = content;
     }
 
-    public static Article of(String title, String content) {
-        return new Article(title, content);
+    public static Article of(UserAccount userAccount, String title, String content) {
+        return new Article(userAccount, title, content);
     }
+
 
     @Override
     public boolean equals(Object o) {

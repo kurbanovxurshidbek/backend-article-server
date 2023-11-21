@@ -1,4 +1,4 @@
-package com.article.article.model;
+package com.article.article.model.entity;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.EntityListeners;
