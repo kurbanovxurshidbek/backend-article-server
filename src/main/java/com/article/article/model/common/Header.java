@@ -6,8 +6,7 @@ import org.antlr.v4.runtime.misc.NotNull;
 
 import java.time.LocalDateTime;
 
-import static com.project.articles.model.common.ErrorCodes.ERROR;
-import static com.project.articles.model.common.ErrorCodes.SUCCESS;
+import static com.article.article.model.common.ErrorCodes.*;
 
 @Builder
 @Getter

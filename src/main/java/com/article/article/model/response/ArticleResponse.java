@@ -1,4 +1,4 @@
-package com.article.article.model.request;
+package com.article.article.model.response;
 
 import com.article.article.model.dto.ArticleDto;
 import com.article.article.model.dto.HashtagDto;
