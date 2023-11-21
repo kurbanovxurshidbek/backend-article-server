@@ -41,6 +41,33 @@ public class ArticleService {
         return ArticleDto.from(savedArticle);
     }
 
+    public ArticleDto updateArticle(Long articleId, Header<ArticleRequest> dto) {
+        ArticleRequest articleRequest = dto.getData();
+
+        UserAccount userAccount = userAccountRepository.findByUserId(articleRequest.userId()).orElseThrow(() -> new ResourceNotFoundException("User not found"));
+        Article article = articleRepository.findById(articleId).orElseThrow(() -> new ResourceNotFoundException("Article not found"));
+        article.setTitle(articleRequest.title());
+        article.setContent(articleRequest.title());
+        article.setUserAccount(userAccount);
+
+        // get hashtag ids from article
+        Set<Long> hashtagIds = article.getHashtags().stream()
+                .map(Hashtag::getId)
+                .collect(Collectors.toUnmodifiableSet());
+        // clear hashtags from article
+        article.clearHashtags();
+
+        // delete hashtags from db
+        hashtagIds.forEach(hashtagService::deleteHashtagWithoutArticles);
+
+        // reset new hashtags
+        Set<Hashtag> hashtags = getHashtagsFromContent(articleRequest.content());
+        article.addHashtags(hashtags);
+
+        Article updatedArticle = articleRepository.save(article);
+        return ArticleDto.from(updatedArticle);
+    }
+
     private Set<Hashtag> getHashtagsFromContent(String content) {
         // Save hashtag if not exist
         Set<String> hashtagNamesInContent = hashtagService.parseHashtagNames(content);
@@ -61,5 +88,15 @@ public class ArticleService {
 
     public ArticleDto getArticle(Long id) {
         return articleRepository.findById(id).map(ArticleDto::from).orElseThrow(() -> new ResourceNotFoundException("Article not found"));
+    }
+
+    public void deleteArticle(Long id) {
+        Article article = articleRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("Article not found"));
+        Set<Long> hashtagIds = article.getHashtags().stream()
+                .map(Hashtag::getId)
+                .collect(Collectors.toUnmodifiableSet());
+
+        articleRepository.deleteById(id);
+        hashtagIds.forEach(hashtagService::deleteHashtagWithoutArticles);
     }
 }

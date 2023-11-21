@@ -40,4 +40,16 @@ public class ArticleController {
         ArticleResponse articleResponse = ArticleResponse.from(articleService.getArticle(id));
         return Header.ok(articleResponse);
     }
+
+    @PutMapping("/articles/{id}")
+    public Header<?> updateArticle(@PathVariable Long id, @RequestBody Header<ArticleRequest> dto) {
+        ArticleResponse articleResponse = ArticleResponse.from(articleService.updateArticle(id, dto));
+        return Header.ok(articleResponse);
+    }
+
+    @DeleteMapping("/articles/{id}")
+    public Header<?> deleteArticle(@PathVariable Long id) {
+        articleService.deleteArticle(id);
+        return Header.ok();
+    }
 }
