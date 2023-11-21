@@ -4,6 +4,7 @@ import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
+
 import java.util.LinkedHashSet;
 import java.util.Objects;
 import java.util.Set;
@@ -37,6 +38,15 @@ public class Article extends AuditingFields {
     @ToString.Exclude
     @OneToMany(mappedBy = "article", cascade = CascadeType.ALL)
     private final Set<Comment> comments = new LinkedHashSet<>();
+
+    @ToString.Exclude
+    @JoinTable(
+            name = "article_hashtag",
+            joinColumns = @JoinColumn(name = "article_id"),
+            inverseJoinColumns = @JoinColumn(name = "hashtag_id")
+    )
+    @ManyToMany(cascade = {CascadeType.PERSIST, CascadeType.MERGE})
+    private final Set<Hashtag> hashtags = new LinkedHashSet<>();
 
     protected Article() {
     }
