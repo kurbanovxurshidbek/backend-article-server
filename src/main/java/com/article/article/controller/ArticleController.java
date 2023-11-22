@@ -4,7 +4,6 @@ import com.article.article.model.common.Header;
 import com.article.article.model.common.PaginationData;
 import com.article.article.model.entity.Article;
 import com.article.article.model.enums.SearchType;
-import com.article.article.model.projection.ArticleProjection;
 import com.article.article.model.request.ArticleRequest;
 import com.article.article.model.response.ArticleResponse;
 import com.article.article.service.ArticleService;

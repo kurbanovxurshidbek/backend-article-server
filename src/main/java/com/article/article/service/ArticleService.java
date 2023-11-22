@@ -8,7 +8,6 @@ import com.article.article.model.entity.Article;
 import com.article.article.model.entity.Hashtag;
 import com.article.article.model.entity.UserAccount;
 import com.article.article.model.enums.SearchType;
-import com.article.article.model.projection.ArticleProjection;
 import com.article.article.model.request.ArticleRequest;
 import com.article.article.repository.ArticleRepository;
 import com.article.article.repository.HashtagRepository;
@@ -95,6 +94,7 @@ public class ArticleService {
             case CONTENT -> articleRepository.findByContentContaining(keyword, pageable).map(ArticleDto::from);
             case ID -> articleRepository.findByUserAccount_UserIdContaining(keyword, pageable).map(ArticleDto::from);
             case NICKNAME -> articleRepository.findByUserAccount_NicknameContaining(keyword, pageable).map(ArticleDto::from);
+            case HASHTAG -> articleRepository.findByHashtagNames(Arrays.stream(keyword.split(" ")).toList(), pageable).map(ArticleDto::from);
         };
     }
 

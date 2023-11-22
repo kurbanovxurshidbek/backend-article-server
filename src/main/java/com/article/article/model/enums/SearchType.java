@@ -6,7 +6,8 @@ public enum SearchType {
     TITLE("Title"),
     CONTENT("Content"),
     ID("User ID"),
-    NICKNAME("Nickname");
+    NICKNAME("Nickname"),
+    HASHTAG("Hashtag");
 
     @Getter
     private final String description;
