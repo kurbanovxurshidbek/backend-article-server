@@ -2,6 +2,7 @@ package com.article.article.repository;
 
 import com.article.article.model.entity.Article;
 import com.article.article.model.entity.Hashtag;
+import com.article.article.model.projection.ArticleProjection;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -40,5 +41,20 @@ public interface ArticleRepository extends JpaRepository<Article, Long> {
                where H.name  in (:hashtagNames);
             """)
     Page<Article> findByHashtagNames(Collection<String> hashtagNames, Pageable pageable);
+
+    @Query(nativeQuery = true, value = """
+               select
+                   A.id,
+                   A.user_id,
+                   A.title,
+                   A.content
+               from article as A
+               inner join article_hashtag AH
+               on A.id = AH.article_id
+               inner join hashtag H
+               on AH.hashtag_id = H.id
+               where H.name in (:hashtagNames);
+            """)
+    Page<ArticleProjection> findArticlesByHashtag(Collection<String> hashtagNames, Pageable pageable);
 
 }

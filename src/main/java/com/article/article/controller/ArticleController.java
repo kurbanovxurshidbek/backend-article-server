@@ -4,6 +4,7 @@ import com.article.article.model.common.Header;
 import com.article.article.model.common.PaginationData;
 import com.article.article.model.entity.Article;
 import com.article.article.model.enums.SearchType;
+import com.article.article.model.projection.ArticleProjection;
 import com.article.article.model.request.ArticleRequest;
 import com.article.article.model.response.ArticleResponse;
 import com.article.article.service.ArticleService;
@@ -64,6 +65,17 @@ public class ArticleController {
             @RequestParam(defaultValue = "10") int size) {
         Pageable paging = PageRequest.of(page, size);
         Page<ArticleResponse> articlesPage = articleService.searchArticles(searchType, keyword, paging).map(ArticleResponse::from);
+
+        return Header.ok(articlesPage.getContent(), PaginationData.build(articlesPage));
+    }
+
+    @GetMapping("/articles/hashtag")
+    public Header<?> searchArticlesByHashtag(
+            @RequestParam(required = false) String keyword,
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size) {
+        Pageable paging = PageRequest.of(page, size);
+        Page<ArticleProjection> articlesPage = articleService.searchArticlesByHashtag(keyword, paging);
 
         return Header.ok(articlesPage.getContent(), PaginationData.build(articlesPage));
     }
