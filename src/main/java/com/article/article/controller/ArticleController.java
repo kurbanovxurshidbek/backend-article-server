@@ -3,6 +3,8 @@ package com.article.article.controller;
 import com.article.article.model.common.Header;
 import com.article.article.model.common.PaginationData;
 import com.article.article.model.entity.Article;
+import com.article.article.model.enums.SearchType;
+import com.article.article.model.projection.ArticleProjection;
 import com.article.article.model.request.ArticleRequest;
 import com.article.article.model.response.ArticleResponse;
 import com.article.article.service.ArticleService;
@@ -13,6 +15,8 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 @RequiredArgsConstructor
 @RequestMapping("/api")
@@ -27,18 +31,18 @@ public class ArticleController {
         return Header.ok(articleResponse);
     }
 
-    @GetMapping("/articles")
-    public Header<?> getAllArticles(@RequestParam(defaultValue = "") String keyword, @RequestParam(defaultValue = "0") int page, @RequestParam(defaultValue = "10") int size) {
-        Pageable paging = PageRequest.of(page, size);
-        Page<ArticleResponse> articlesPage = articleService.searchArticles(keyword, paging).map(ArticleResponse::from);
-
-        return Header.ok(articlesPage.getContent(), PaginationData.build(articlesPage));
-    }
-
     @GetMapping("/articles/{id}")
     public Header<?> getArticle(@PathVariable Long id) {
         ArticleResponse articleResponse = ArticleResponse.from(articleService.getArticle(id));
         return Header.ok(articleResponse);
+    }
+
+    @GetMapping("/articles")
+    public Header<?> getAllArticles(@RequestParam(defaultValue = "0") int page, @RequestParam(defaultValue = "10") int size) {
+        Pageable paging = PageRequest.of(page, size);
+        Page<ArticleResponse> articlesPage = articleService.getArticles(paging).map(ArticleResponse::from);
+
+        return Header.ok(articlesPage.getContent(), PaginationData.build(articlesPage));
     }
 
     @PutMapping("/articles/{id}")
@@ -52,4 +56,17 @@ public class ArticleController {
         articleService.deleteArticle(id);
         return Header.ok();
     }
+
+    @GetMapping("/articles/search")
+    public Header<?> searchArticles(
+            @RequestParam(required = false) SearchType searchType,
+            @RequestParam(required = false) String keyword,
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size) {
+        Pageable paging = PageRequest.of(page, size);
+        Page<ArticleResponse> articlesPage = articleService.searchArticles(searchType, keyword, paging).map(ArticleResponse::from);
+
+        return Header.ok(articlesPage.getContent(), PaginationData.build(articlesPage));
+    }
+
 }

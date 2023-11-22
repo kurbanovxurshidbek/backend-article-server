@@ -1,8 +1,11 @@
 package com.article.article.service;
 
+import com.article.article.exception.ResourceNotFoundException;
+import com.article.article.model.entity.Article;
 import com.article.article.model.entity.Hashtag;
 import com.article.article.repository.HashtagRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import java.util.HashSet;
 import java.util.Optional;

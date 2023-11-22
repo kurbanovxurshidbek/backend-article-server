@@ -7,8 +7,11 @@ import com.article.article.model.dto.UserAccountDto;
 import com.article.article.model.entity.Article;
 import com.article.article.model.entity.Hashtag;
 import com.article.article.model.entity.UserAccount;
+import com.article.article.model.enums.SearchType;
+import com.article.article.model.projection.ArticleProjection;
 import com.article.article.model.request.ArticleRequest;
 import com.article.article.repository.ArticleRepository;
+import com.article.article.repository.HashtagRepository;
 import com.article.article.repository.UserAccountRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -16,7 +19,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
-import java.util.Set;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Slf4j
@@ -78,12 +81,21 @@ public class ArticleService {
         return hashtagService.findHashtagsByNames(hashtagNamesInContent);
     }
 
-    public Page<ArticleDto> searchArticles(String keyword, Pageable pageable) {
+    public Page<ArticleDto> getArticles(Pageable pageable) {
+        return articleRepository.findAll(pageable).map(ArticleDto::from);
+    }
+
+    public Page<ArticleDto> searchArticles(SearchType searchType, String keyword, Pageable pageable) {
         if (keyword == null || keyword.isBlank()) {
             return articleRepository.findAll(pageable).map(ArticleDto::from);
         }
 
-        return articleRepository.findByTitleContaining(keyword, pageable).map(ArticleDto::from);
+        return switch (searchType) {
+            case TITLE -> articleRepository.findByTitleContaining(keyword, pageable).map(ArticleDto::from);
+            case CONTENT -> articleRepository.findByContentContaining(keyword, pageable).map(ArticleDto::from);
+            case ID -> articleRepository.findByUserAccount_UserIdContaining(keyword, pageable).map(ArticleDto::from);
+            case NICKNAME -> articleRepository.findByUserAccount_NicknameContaining(keyword, pageable).map(ArticleDto::from);
+        };
     }
 
     public ArticleDto getArticle(Long id) {
@@ -99,4 +111,5 @@ public class ArticleService {
         articleRepository.deleteById(id);
         hashtagIds.forEach(hashtagService::deleteHashtagWithoutArticles);
     }
+
 }
