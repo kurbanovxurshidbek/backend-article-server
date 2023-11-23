@@ -24,21 +24,17 @@ public class Article extends AuditingFields {
     private Long id;
 
     @Setter
+    @ManyToOne
+    @JoinColumn(name = "userId")
+    private UserAccount userAccount;
+
+    @Setter
     @Column(nullable = false)
     private String title;
 
     @Setter
     @Column(nullable = false, length = 1000)
     private String content;
-
-    @Setter
-    @ManyToOne
-    @JoinColumn(name = "userId")
-    private UserAccount userAccount;
-
-    @ToString.Exclude
-    @OneToMany(mappedBy = "article", cascade = CascadeType.ALL)
-    private final Set<Comment> comments = new LinkedHashSet<>();
 
     @ToString.Exclude
     @JoinTable(
@@ -48,6 +44,10 @@ public class Article extends AuditingFields {
     )
     @ManyToMany(cascade = {CascadeType.PERSIST, CascadeType.MERGE})
     private final Set<Hashtag> hashtags = new LinkedHashSet<>();
+
+    @ToString.Exclude
+    @OneToMany(mappedBy = "article", cascade = CascadeType.ALL)
+    private final Set<Comment> comments = new LinkedHashSet<>();
 
     protected Article() {
     }

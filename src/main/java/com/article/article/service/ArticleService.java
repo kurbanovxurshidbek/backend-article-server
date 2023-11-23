@@ -11,14 +11,12 @@ import com.article.article.model.enums.SearchType;
 import com.article.article.model.projection.ArticleProjection;
 import com.article.article.model.request.ArticleRequest;
 import com.article.article.repository.ArticleRepository;
-import com.article.article.repository.HashtagRepository;
 import com.article.article.repository.UserAccountRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
-
 import java.util.*;
 import java.util.stream.Collectors;
 

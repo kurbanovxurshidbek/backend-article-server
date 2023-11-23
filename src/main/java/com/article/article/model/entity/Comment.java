@@ -21,8 +21,8 @@ public class Comment extends AuditingFields {
     private Long id;
 
     @Setter
-    @Column(nullable = false, length = 500)
-    private String content;
+    @ManyToOne
+    private Article article;
 
     @Setter
     @ManyToOne
@@ -30,18 +30,20 @@ public class Comment extends AuditingFields {
     private UserAccount userAccount;
 
     @Setter
-    @ManyToOne
-    private Article article;
+    @Column(nullable = false, length = 500)
+    private String content;
 
     protected Comment() {
     }
 
-    private Comment(String content) {
+    private Comment(Article article, UserAccount userAccount, String content) {
+        this.article = article;
+        this.userAccount = userAccount;
         this.content = content;
     }
 
-    public static Comment of(String content) {
-        return new Comment(content);
+    public static Comment of(Article article, UserAccount userAccount, String content) {
+        return new Comment(article, userAccount, content);
     }
 
     @Override
