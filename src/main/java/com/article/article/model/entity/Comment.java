@@ -4,8 +4,11 @@ import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
+import org.springframework.core.annotation.Order;
 
+import java.util.LinkedHashSet;
 import java.util.Objects;
+import java.util.Set;
 
 @Getter
 @ToString(callSuper = true)
@@ -30,6 +33,16 @@ public class Comment extends AuditingFields {
     private UserAccount userAccount;
 
     @Setter
+    @JoinColumn(name = "parentCommentId")
+    @ManyToOne
+    private Comment parentComment;
+
+    @ToString.Exclude
+    @OrderBy("createdAt ASC")
+    @OneToMany(mappedBy = "parentComment", cascade = CascadeType.ALL)
+    private final Set<Comment> childComments = new LinkedHashSet<>();
+
+    @Setter
     @Column(nullable = false, length = 500)
     private String content;
 
@@ -44,6 +57,11 @@ public class Comment extends AuditingFields {
 
     public static Comment of(Article article, UserAccount userAccount, String content) {
         return new Comment(article, userAccount, content);
+    }
+
+    public void addChildComment(Comment child) {
+        //child.setParentComment(this.getId());
+        this.getChildComments().add(child);
     }
 
     @Override

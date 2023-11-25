@@ -12,14 +12,20 @@ public record CommentDto(
         Long id,
         Long articleId,
         UserAccountDto userAccountDto,
+        Long parentCommentId,
         String content
 ) {
+
     public static CommentDto of(Long articleId, UserAccountDto userAccountDto, String content) {
-        return new CommentDto(null, articleId, userAccountDto, content);
+        return CommentDto.of(null, articleId, userAccountDto, null, content);
     }
 
-    public static CommentDto of(Long id, Long articleId, UserAccountDto userAccountDto, String content) {
-        return new CommentDto(id, articleId, userAccountDto, content);
+    public static CommentDto of(Long articleId, UserAccountDto userAccountDto, Long parentCommentId, String content) {
+        return CommentDto.of(null, articleId, userAccountDto, parentCommentId, content);
+    }
+
+    public static CommentDto of(Long id, Long articleId, UserAccountDto userAccountDto, Long parentCommentId, String content) {
+        return new CommentDto(id, articleId, userAccountDto, parentCommentId, content);
     }
 
     public static CommentDto from(Comment entity) {
@@ -27,6 +33,7 @@ public record CommentDto(
                 entity.getId(),
                 entity.getArticle().getId(),
                 UserAccountDto.from(entity.getUserAccount()),
+                entity.getParentComment().getId(),
                 entity.getContent()
         );
     }
