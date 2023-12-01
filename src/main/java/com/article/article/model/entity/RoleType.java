@@ -3,12 +3,17 @@ package com.article.article.model.entity;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
+import lombok.ToString;
 
 @Getter
-@Setter
+@ToString(callSuper = true)
+@Table(name = "roletype", indexes = {
+        @Index(columnList = "name"),
+        @Index(columnList = "createdAt"),
+        @Index(columnList = "createdBy")
+})
 @Entity
-@Table(name = "roles")
-public class RoleType {
+public class RoleType extends AuditingFields{
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -17,11 +22,14 @@ public class RoleType {
     @Column(nullable = false, length = 50, unique = true)
     private String name;
 
-    public RoleType(String name) {
+    protected RoleType() {
+    }
+
+    private RoleType(String name) {
         this.name = name;
     }
 
-    public RoleType() {
-
+    public static RoleType of(String name) {
+        return new RoleType(name);
     }
 }
