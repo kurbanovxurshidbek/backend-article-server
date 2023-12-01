@@ -5,7 +5,9 @@ import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
 
+import java.util.HashSet;
 import java.util.Objects;
+import java.util.Set;
 
 @Getter
 @ToString(callSuper = true)
@@ -32,6 +34,15 @@ public class UserAccount extends AuditingFields {
     @Setter
     @Column(length = 100)
     private String nickname;
+
+    @Setter
+    @ManyToMany(fetch = FetchType.EAGER)
+    @JoinTable(
+            name = "useraccount_roletype",
+            joinColumns = @JoinColumn(name = "useraccount_id"),
+            inverseJoinColumns = @JoinColumn(name = "roletype_id")
+    )
+    private Set<RoleType> roles = new HashSet<>();
 
     protected UserAccount() {
     }
