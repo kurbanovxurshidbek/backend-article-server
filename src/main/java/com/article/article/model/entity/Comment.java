@@ -4,7 +4,6 @@ import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
-import org.springframework.core.annotation.Order;
 
 import java.util.LinkedHashSet;
 import java.util.Objects;
@@ -56,6 +55,10 @@ public class Comment extends AuditingFields {
     }
 
     public static Comment of(Article article, UserAccount userAccount, String content) {
+        return new Comment(article, userAccount, content);
+    }
+
+    public static Comment of(Article article, UserAccount userAccount, Comment parentComment, String content) {
         return new Comment(article, userAccount, content);
     }
 

@@ -31,7 +31,7 @@ public class ArticleService {
     public ArticleDto saveArticle(Header<ArticleRequest> dto) {
         ArticleRequest articleRequest = dto.getData();
 
-        UserAccount userAccount = userAccountRepository.findByUserId(articleRequest.userId()).orElseThrow(() -> new ResourceNotFoundException("User not found"));
+        UserAccount userAccount = userAccountRepository.findByUsername(articleRequest.username()).orElseThrow(() -> new ResourceNotFoundException("User not found"));
         ArticleDto articleDto = articleRequest.toDto(UserAccountDto.from(userAccount));
         Set<Hashtag> hashtags = getHashtagsFromContent(articleDto.content());
 
@@ -45,7 +45,7 @@ public class ArticleService {
     public ArticleDto updateArticle(Long articleId, Header<ArticleRequest> dto) {
         ArticleRequest articleRequest = dto.getData();
 
-        UserAccount userAccount = userAccountRepository.findByUserId(articleRequest.userId()).orElseThrow(() -> new ResourceNotFoundException("User not found"));
+        UserAccount userAccount = userAccountRepository.findByUsername(articleRequest.username()).orElseThrow(() -> new ResourceNotFoundException("User not found"));
         Article article = articleRepository.findById(articleId).orElseThrow(() -> new ResourceNotFoundException("Article not found"));
         article.setTitle(articleRequest.title());
         article.setContent(articleRequest.title());
@@ -91,7 +91,7 @@ public class ArticleService {
         return switch (searchType) {
             case TITLE -> articleRepository.findByTitleContaining(keyword, pageable).map(ArticleDto::from);
             case CONTENT -> articleRepository.findByContentContaining(keyword, pageable).map(ArticleDto::from);
-            case ID -> articleRepository.findByUserAccount_UserIdContaining(keyword, pageable).map(ArticleDto::from);
+            case ID -> articleRepository.findByUserAccount_UsernameContaining(keyword, pageable).map(ArticleDto::from);
             case NICKNAME -> articleRepository.findByUserAccount_NicknameContaining(keyword, pageable).map(ArticleDto::from);
             case HASHTAG -> articleRepository.findByHashtagNames(Arrays.stream(keyword.split(" ")).toList(), pageable).map(ArticleDto::from);
         };

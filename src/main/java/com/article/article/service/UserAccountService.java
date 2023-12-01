@@ -4,12 +4,10 @@ import com.article.article.model.common.Header;
 import com.article.article.model.dto.UserAccountDto;
 import com.article.article.model.entity.UserAccount;
 import com.article.article.model.request.UserAccountRequest;
-import com.article.article.model.response.UserIdResponse;
+import com.article.article.model.response.UsernameResponse;
 import com.article.article.repository.UserAccountRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
-
-import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -17,21 +15,19 @@ public class UserAccountService {
 
     private final UserAccountRepository userAccountRepository;
 
-    public UserIdResponse createUserAccount(Header<UserAccountRequest> dto) {
+    public UsernameResponse createUserAccount(Header<UserAccountRequest> dto) {
         var userDto = dto.getData();
-        var id = userDto.userId();
+        var username = userDto.username();
         var password = userDto.password();
-        var email = userDto.email();
         var nickname = userDto.nickname();
-        var memo = userDto.memo();
 
-        UserAccount userAccount = UserAccount.of(id, password, email, nickname, memo);
+        UserAccount userAccount = UserAccount.of(username, password, nickname);
         UserAccount savedUserAccount = userAccountRepository.save(userAccount);
-        return new UserIdResponse(savedUserAccount.getUserId());
+        return new UsernameResponse(savedUserAccount.getUsername());
     }
 
-    public UserAccountDto findByUserId(String userId) {
-        UserAccount userAccount = userAccountRepository.findByUserId(userId).orElseThrow();
+    public UserAccountDto findByUsername(String username) {
+        UserAccount userAccount = userAccountRepository.findByUsername(username).orElseThrow();
         return UserAccountDto.from(userAccount);
     }
 }

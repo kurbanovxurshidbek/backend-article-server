@@ -3,23 +3,21 @@ package com.article.article.model.dto;
 import com.article.article.model.entity.UserAccount;
 
 public record UserAccountDto(
-        String userId,
+        Long id,
+        String username,
         String password,
-        String email,
-        String nickname,
-        String memo
+        String nickname
 ) {
-    public static UserAccountDto of(String userId, String password, String email, String nickname, String memo) {
-        return new UserAccountDto(userId, password, email, nickname, memo);
+    public static UserAccountDto of(Long id, String username, String password, String nickname) {
+        return new UserAccountDto(id, username, password, nickname);
     }
 
     public static UserAccountDto from(UserAccount entity) {
         return new UserAccountDto(
-                entity.getUserId(),
+                entity.getId(),
+                entity.getUsername(),
                 entity.getPassword(),
-                entity.getEmail(),
-                entity.getNickname(),
-                entity.getMemo()
+                entity.getNickname()
         );
     }
 }

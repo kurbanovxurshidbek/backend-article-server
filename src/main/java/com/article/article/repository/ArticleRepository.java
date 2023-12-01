@@ -19,7 +19,7 @@ public interface ArticleRepository extends JpaRepository<Article, Long> {
 
     Page<Article> findByContentContaining(String content, Pageable pageable);
 
-    Page<Article> findByUserAccount_UserIdContaining(String userId, Pageable pageable);
+    Page<Article> findByUserAccount_UsernameContaining(String userId, Pageable pageable);
 
     Page<Article> findByUserAccount_NicknameContaining(String nickname, Pageable pageable);
 

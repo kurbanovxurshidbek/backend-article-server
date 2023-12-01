@@ -2,6 +2,7 @@ package com.article.article.model.enums;
 
 import lombok.Getter;
 
+@Getter
 public enum SearchType {
     TITLE("Title"),
     CONTENT("Content"),
@@ -9,7 +10,6 @@ public enum SearchType {
     NICKNAME("Nickname"),
     HASHTAG("Hashtag");
 
-    @Getter
     private final String description;
 
     SearchType(String description) {

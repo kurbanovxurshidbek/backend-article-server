@@ -11,7 +11,7 @@ import java.util.Set;
 public record ArticleRequest(
         @NotBlank(message = "userId is required")
         @Size(min = 5, max = 20)
-        String userId,
+        String username,
 
         @NotBlank(message = "title is required")
         @Size(min = 5, max = 20)
@@ -20,8 +20,8 @@ public record ArticleRequest(
         @Size(min = 5, max = 500)
         String content
 ) {
-    public static ArticleRequest of(String userId, String title, String content) {
-        return new ArticleRequest(userId, title, content);
+    public static ArticleRequest of(String username, String title, String content) {
+        return new ArticleRequest(username, title, content);
     }
 
     public ArticleDto toDto(UserAccountDto userAccountDto) {

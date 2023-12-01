@@ -4,10 +4,6 @@ import com.article.article.model.entity.Article;
 import com.article.article.model.entity.Comment;
 import com.article.article.model.entity.UserAccount;
 
-import java.time.LocalDateTime;
-import java.util.Set;
-import java.util.stream.Collectors;
-
 public record CommentDto(
         Long id,
         Long articleId,
@@ -29,11 +25,12 @@ public record CommentDto(
     }
 
     public static CommentDto from(Comment entity) {
+
         return new CommentDto(
                 entity.getId(),
                 entity.getArticle().getId(),
                 UserAccountDto.from(entity.getUserAccount()),
-                entity.getParentComment().getId(),
+                entity.getParentComment() != null ? entity.getParentComment().getId() : null,
                 entity.getContent()
         );
     }

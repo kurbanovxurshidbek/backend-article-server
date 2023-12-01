@@ -10,7 +10,7 @@ import java.util.Objects;
 @Getter
 @ToString(callSuper = true)
 @Table(indexes = {
-        @Index(columnList = "email", unique = true),
+        @Index(columnList = "username", unique = true),
         @Index(columnList = "createdAt"),
         @Index(columnList = "createdBy")
 })
@@ -18,8 +18,12 @@ import java.util.Objects;
 public class UserAccount extends AuditingFields {
 
     @Id
-    @Column(length = 50)
-    private String userId;
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
+
+    @Setter
+    @Column(length = 100)
+    private String username;
 
     @Setter
     @Column(nullable = false)
@@ -27,37 +31,19 @@ public class UserAccount extends AuditingFields {
 
     @Setter
     @Column(length = 100)
-    private String email;
-
-    @Setter
-    @Column(length = 100)
     private String nickname;
 
-    @Setter
-    private String memo;
+    protected UserAccount() {
+    }
 
-    protected UserAccount(){}
-
-    private UserAccount(String userId, String password, String email, String nickname, String memo, String createdBy) {
-        this.userId = userId;
+    private UserAccount(String username, String password, String nickname) {
+        this.username = username;
         this.password = password;
-        this.email = email;
         this.nickname = nickname;
-        this.memo = memo;
-        this.createdBy = createdBy;
-        this.modifiedBy = createdBy;
     }
 
-    public static UserAccount of(String userId, String email, String nickname, String memo) {
-        return UserAccount.of(userId, null, email, nickname, memo, memo);
-    }
-
-    public static UserAccount of(String userId, String userPassword, String email, String nickname, String memo) {
-        return UserAccount.of(userId, userPassword, email, nickname, memo, null);
-    }
-
-    public static UserAccount of(String userId, String userPassword, String email, String nickname, String memo, String createdBy) {
-        return new UserAccount(userId, userPassword, email, nickname, memo, createdBy);
+    public static UserAccount of(String username, String password, String nickname) {
+        return new UserAccount(username, password, nickname);
     }
 
     @Override
@@ -65,11 +51,11 @@ public class UserAccount extends AuditingFields {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         UserAccount that = (UserAccount) o;
-        return Objects.equals(userId, that.userId);
+        return Objects.equals(id, that.id);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(userId);
+        return Objects.hash(id);
     }
 }
