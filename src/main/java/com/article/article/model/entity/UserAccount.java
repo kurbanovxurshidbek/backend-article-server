@@ -57,6 +57,10 @@ public class UserAccount extends AuditingFields {
         return new UserAccount(username, password, nickname);
     }
 
+    public void addRoleType(RoleType roleType){
+        this.roles.add(roleType);
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;

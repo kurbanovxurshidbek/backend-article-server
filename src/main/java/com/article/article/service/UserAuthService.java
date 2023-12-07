@@ -2,6 +2,7 @@ package com.article.article.service;
 
 import com.article.article.model.common.Header;
 import com.article.article.model.dto.UserAccountDto;
+import com.article.article.model.entity.RoleType;
 import com.article.article.model.entity.UserAccount;
 import com.article.article.model.request.SignInRequest;
 import com.article.article.model.request.SignUpRequest;
@@ -24,6 +25,7 @@ public class UserAuthService {
     private final JwtProvider jwtProvider;
     private final AuthenticationManager authenticationManager;
     private final PasswordEncoder passwordEncoder;
+    private final RoleTypeRepository roleTypeRepository;
 
     public UserAccountDto signUp(Header<SignUpRequest> dto) {
         SignUpRequest request = dto.getData();
@@ -32,6 +34,9 @@ public class UserAuthService {
         var nickname = request.nickname();
 
         UserAccount userAccount = UserAccount.of(username, password, nickname);
+        var roleType = roleTypeRepository.findById(1L).orElseThrow();
+        userAccount.addRoleType(roleType);
+
         UserAccount savedUserAccount = userAccountRepository.save(userAccount);
         return UserAccountDto.from(savedUserAccount);
     }
